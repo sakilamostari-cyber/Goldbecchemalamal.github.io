@@ -1,0 +1,123 @@
+{
+  "entities": {
+    "GoldItem": {
+      "title": "GoldItem",
+      "description": "A piece of personal old gold jewelry to calculate liquidation value",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "UID of the owner"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Name or description of jewelry item (e.g. Necklace, Bangle)"
+        },
+        "karat": {
+          "type": "string",
+          "enum": ["22K", "21K", "18K", "Traditional"],
+          "description": "Purity karat of the gold"
+        },
+        "weightVori": {
+          "type": "number",
+          "description": "Weight in Vori (11.664g)"
+        },
+        "weightGrams": {
+          "type": "number",
+          "description": "Weight in grams"
+        },
+        "originalPricePerVori": {
+          "type": "number",
+          "description": "Purchase price per vori when bought"
+        },
+        "hasHallmarkVoucher": {
+          "type": "boolean",
+          "description": "Whether receipt/memo is available"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        }
+      },
+      "required": ["userId", "name", "karat", "weightVori"]
+    },
+    "UserPreference": {
+      "title": "UserPreference",
+      "description": "Personal gold selling thresholds and preferences",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "UID of the owner"
+        },
+        "targetSellingPricePerVori": {
+          "type": "number",
+          "description": "Target BDT price per vori to trigger peak selling alert"
+        },
+        "buybackPercent": {
+          "type": "number",
+          "description": "Expected buyback realization percentage (e.g. 82.5)"
+        },
+        "alertEmail": {
+          "type": "string",
+          "maxLength": 120,
+          "description": "Gmail address to receive price alerts and sales reports"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of update"
+        }
+      },
+      "required": ["userId", "targetSellingPricePerVori"]
+    },
+    "EmailLog": {
+      "title": "EmailLog",
+      "description": "Log of gold valuation alerts sent via Gmail",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "UID of the owner"
+        },
+        "recipient": {
+          "type": "string",
+          "maxLength": 120,
+          "description": "Recipient email"
+        },
+        "subject": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Email subject"
+        },
+        "marketRate22K": {
+          "type": "number",
+          "description": "22K rate when email was sent"
+        },
+        "totalEstimatedCash": {
+          "type": "number",
+          "description": "Calculated total cash-in-hand value"
+        },
+        "sentAt": {
+          "type": "string",
+          "description": "ISO timestamp when email was dispatched"
+        }
+      },
+      "required": ["userId", "recipient", "subject", "sentAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/gold_items/{itemId}": {
+      "schema": "GoldItem",
+      "description": "Personal gold jewelry items owned by the user"
+    },
+    "/users/{userId}/preferences/{prefId}": {
+      "schema": "UserPreference",
+      "description": "User selling threshold and alert settings"
+    },
+    "/users/{userId}/email_logs/{logId}": {
+      "schema": "EmailLog",
+      "description": "History of Gmail reports sent by the user"
+    }
+  }
+}
